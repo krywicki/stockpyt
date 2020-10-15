@@ -1,7 +1,7 @@
 from typing import List, Any
 import requests
 
-from .common import TickerAgent, QuoteResult, StockQuote
+from .common import TickerAgent, StockQuote
 from .errors import StockpytError
 
 class YahooTickerAgent(TickerAgent):
@@ -11,20 +11,19 @@ class YahooTickerAgent(TickerAgent):
         return f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"\
             "?region=USincludePrePost=false&interval=2m&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance"
 
-    def get_quotes(self, symbols:List[str]) -> List[QuoteResult]:
+    def get_quotes(self, symbols:List[str]) -> List[StockQuote]:
         """ Get stock quotes, by symbol, from yahoo finance """
-        results:List[QuoteResult] = []
+        results:List[StockQuote] = []
         for symbol in symbols:
             results.append(self._get_quote(symbol))
         return results
 
-    def _get_quote(self, symbol:str) -> QuoteResult:
+    def _get_quote(self, symbol:str) -> StockQuote:
         resp = requests.get(self.get_quote_url(symbol))
         if resp.status_code == 200:
-            quote = self._parse_resp(resp)
-            return QuoteResult.from_ok(quote)
+            return self._parse_resp(resp)
         else:
-            return QuoteResult.from_bad("bad request")
+            return StockQuote.from_err(symbol, "bad request")
 
     def _parse_resp(self, resp=requests.Response) -> StockQuote:
         data = resp.json()
