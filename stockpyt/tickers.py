@@ -38,6 +38,6 @@ class YahooTickerAgent(TickerAgent):
         quote.low           = min(indicators['low'])
         quote.prev_close    = meta['previousClose']
         quote.price         = meta['regularMarketPrice']
-        quote.perc_change   = ((quote.prev_close - quote.price) / quote.prev_close) * 100.0
+        quote.perc_change   = -((quote.prev_close - quote.price) / quote.prev_close) * 100.0
 
         return quote
