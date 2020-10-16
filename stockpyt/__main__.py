@@ -19,10 +19,10 @@ def draw_row(table:Table, quote:StockQuote):
     pc_len:int = 0
 
     if quote.perc_change > 0:
-        pc = f"+{round(quote.perc_change,2)} %"
+        pc = "+{:.2f} %".format(quote.perc_change)
 
     elif quote.perc_change < 0:
-        pc = f"{round(quote.perc_change,2)} %"
+        pc = "{:.2f} %".format(quote.perc_change)
 
     else:
         pc = "0.00 %"
