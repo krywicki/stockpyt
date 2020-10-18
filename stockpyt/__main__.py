@@ -9,56 +9,47 @@ locale.setlocale( locale.LC_ALL, '' )
 
 COL_WIDTH = 15
 
-def draw_row(table:Table, quote:StockQuote):
+def draw_row(table:Table, quote:StockQuote, style:str=None):
     if quote.err:
-        table.add_row(quote.symbol, quote.err)
+        table.add_row(quote.symbol, quote.err, style=style)
         return
 
-    #percent change
-    pc:str = ""
-    pc_len:int = 0
+    # format percent change
+    pc:str = "{:.2f} %".format(quote.perc_change)
+    pc = "+" + pc if quote.perc_change > 0 else pc
+    pc_len:int = len(pc)
 
-    if quote.perc_change > 0:
-        pc = "+{:.2f} %".format(quote.perc_change)
-
-    elif quote.perc_change < 0:
-        pc = "{:.2f} %".format(quote.perc_change)
-
-    else:
-        pc = "0.00 %"
-
-    pc_len = len(pc)
+    # set percent change color
     pc = f"[green]{pc}[/green]" if quote.perc_change > 0 else f"[red]{pc}[/red]"
-
     pad_len = COL_WIDTH - len(quote.symbol) - pc_len
-    pc_pad = "".ljust(pad_len)
 
     table.add_row(
-        "{}{}{}".format(quote.symbol, pc_pad, pc),
-        locale.currency(quote.price, grouping=True),
+        "{}{}{}".format(quote.symbol, "".ljust(pad_len), pc),
+        locale.currency(quote.price, grouping=True, ),
         locale.currency(quote.open, grouping=True),
         locale.currency(quote.high, grouping=True),
         locale.currency(quote.low, grouping=True),
-        locale.currency(quote.prev_close, grouping=True))
+        locale.currency(quote.prev_close, grouping=True),
+        style=style)
 
 
 def draw_quotes(quotes:list):
+    console = Console()
     table = Table(header_style="blue", box=box.ASCII2)
 
     # draw headers
-    table.add_column("Symbol", width=COL_WIDTH)
-    table.add_column("Price", justify="right", width=COL_WIDTH)
-    table.add_column("Open", justify="right", width=COL_WIDTH)
-    table.add_column("High", justify="right", width=COL_WIDTH)
-    table.add_column("Low", justify="right", width=COL_WIDTH)
-    table.add_column("Prev. Close", justify="right", width=COL_WIDTH)
-
+    table.add_column("Symbol", no_wrap=True, width=COL_WIDTH)
+    table.add_column("Price", justify="right", no_wrap=True, width=COL_WIDTH)
+    table.add_column("Open", justify="right", no_wrap=True, width=COL_WIDTH)
+    table.add_column("High", justify="right", no_wrap=True, width=COL_WIDTH)
+    table.add_column("Low", justify="right", no_wrap=True, width=COL_WIDTH)
+    table.add_column("Prev. Close", justify="right", no_wrap=True, width=COL_WIDTH)
 
     # draw rows
-    quote:StockQuote
+    odd_row = False
     for quote in quotes:
-        draw_row(table, quote)
-    console = Console()
+        draw_row(table, quote, style="bright_black" if odd_row else None)
+        odd_row = not odd_row
     console.print(table)
 
 # parse args
