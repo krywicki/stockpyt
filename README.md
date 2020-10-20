@@ -1,5 +1,4 @@
 ## Stock Python Ticker
----
 
 A Stock Python Ticker for the terminal.
 
