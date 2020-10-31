@@ -21,7 +21,7 @@ Simply pass the desired stock symbols as arguments to ```stockpyt```.
 ### Requirements
 ---
 
-- Linux/Mac OS
+- Linux/Mac OS/WSL
 - Python 3.8+
 
 ### Installation
