@@ -1,4 +1,4 @@
-![stockpyt](https://github.com/krywicki/stockpyt/workflows/stockpyt/badge.svg)
+![stockpyt](https://github.com/krywicki/stockpyt/workflows/build/badge.svg)
 
 ## Stock Python Ticker
 
