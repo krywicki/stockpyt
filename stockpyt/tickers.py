@@ -1,5 +1,5 @@
 from typing import List, Any
-import requests
+import sys, requests
 
 from .common import TickerAgent, StockQuote
 from .errors import StockpytError
@@ -64,9 +64,9 @@ class YahooTickerAgent(TickerAgent):
         elif isinstance(values[0], list):
             values = [ self._min(vals) for vals in values ]
 
-        min_val = 0.0
+        min_val = sys.maxsize
         for val in values:
             if isinstance(val, int) or isinstance(val, float):
-                min_val = max(val, min_val)
+                min_val = min(val, min_val)
         return min_val
 
