@@ -14,6 +14,6 @@ setuptools.setup(
         ],
     },
     extras_require={
-        "dev":["python-dotenv"]
+        "ci":["pytest"]
     }
 )
