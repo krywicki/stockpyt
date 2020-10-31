@@ -1,5 +1,6 @@
+![stockpyt](https://github.com/krywicki/stockpyt/workflows/stockpyt/badge.svg)
+
 ## Stock Python Ticker
-![unit-tests](https://github.com/krywicki/stockpyt/workflows/unit-tests/badge.svg?branch=main)
 
 A Stock Python Ticker for the terminal.
 
