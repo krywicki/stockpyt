@@ -1,7 +1,7 @@
 from typing import List, Any
 import sys, requests
 
-from .common import TickerAgent, StockQuote
+from .common import TickerAgent, StockQuote, PricePoints
 from .errors import StockpytError
 
 class YahooTickerAgent(TickerAgent):
@@ -34,39 +34,27 @@ class YahooTickerAgent(TickerAgent):
         quote               = StockQuote()
         quote.symbol        = meta['symbol']
         quote.open          = indicators['open'][0]
-        quote.high          = self._max(indicators['high'])
-        quote.low           = self._min(indicators['low'])
+        quote.high          = max(self._as_price_points(indicators['high']))
+        quote.low           = min(self._as_price_points(indicators['low']))
         quote.prev_close    = meta['previousClose']
         quote.price         = meta['regularMarketPrice']
         quote.perc_change   = -((quote.prev_close - quote.price) / quote.prev_close) * 100.0
+        quote.price_points  = self._as_price_points(indicators['open'])
 
         return quote
 
-    def _max(self, values:list) -> float:
-        """ gets max value. accounts for list-of-lists """
-        val:float = 0.0
-        if not values:
-            return 0.0
-        elif isinstance(values[0], list):
-            values = [ self._max(vals) for vals in values ]
+    def _as_price_points(self, values:list) -> PricePoints:
+        """ convert list of prices to pricepoints """
+        points = PricePoints()
 
-        max_val = 0.0
         for val in values:
-            if isinstance(val, int) or isinstance(val, float):
-                max_val = max(val, max_val)
-        return max_val
+            if isinstance(val, list):
+                points.append(self._as_price_points(val))
 
-    def _min(self, values:list) -> float:
-        """ gets max value. accounts for list-of-lists """
-        val:float = 0.0
-        if not values:
-            return 0.0
-        elif isinstance(values[0], list):
-            values = [ self._min(vals) for vals in values ]
+            elif not val:
+                continue
 
-        min_val = sys.maxsize
-        for val in values:
-            if isinstance(val, int) or isinstance(val, float):
-                min_val = min(val, min_val)
-        return min_val
+            else:
+                points.append(val)
 
+        return points
