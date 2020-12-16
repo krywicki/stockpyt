@@ -1,20 +1,28 @@
 from typing import List
 from pprint import pformat
+from dataclasses import dataclass, field
 
 from . import tickers
 from .errors import StockpytError
 
+@dataclass
+class PricePoints(List[float]):
+    """ List of prices over time """
+    granularity:str = "2m"
+    time_range:str = "1d"
+
+@dataclass
 class StockQuote:
     """ Object that represents stock """
-    def __init__(self):
-        self.symbol:str         = ""
-        self.high:float         = 0.0
-        self.low:float          = 0.0
-        self.open:float         = 0.0
-        self.price:float        = 0.0
-        self.perc_change:float  = 0.0   # percent change from prev close
-        self.prev_close:float   = 0.0   # previous close
-        self.err:str            = ""
+    symbol:str                  = ""
+    high:float                  = 0.0
+    low:float                   = 0.0
+    open:float                  = 0.0
+    price:float                 = 0.0
+    perc_change:float           = 0.0   # percent change from prev close
+    prev_close:float            = 0.0   # previous close
+    price_points:PricePoints    = field(default_factory=PricePoints)
+    err:str                     = ""
 
     @classmethod
     def from_err(cls, symbol:str, err:str):
