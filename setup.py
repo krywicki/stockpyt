@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="stockpyt",
-    version="0.0.2",
+    version="0.0.3",
     python_requires = ">=3.8",
     install_requires=[
         "requests~=2.24",
