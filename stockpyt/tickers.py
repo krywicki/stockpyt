@@ -9,7 +9,7 @@ class YahooTickerAgent(TickerAgent):
 
     def get_quote_url(self, symbol:str) -> str:
         return f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"\
-            "?region=USincludePrePost=false&interval=2m&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance"
+            "?region=US&includePrePost=false&interval=2m&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance"
 
     def get_quotes(self, symbols:List[str]) -> List[StockQuote]:
         """ Get stock quotes, by symbol, from yahoo finance """
@@ -19,7 +19,7 @@ class YahooTickerAgent(TickerAgent):
         return results
 
     def _get_quote(self, symbol:str) -> StockQuote:
-        resp = requests.get(self.get_quote_url(symbol))
+        resp = requests.get(self.get_quote_url(symbol), headers={ "User-Agent": "stockpyt/1.2.3" })
         if resp.status_code == 200:
             return self._parse_resp(resp)
         else:
@@ -69,4 +69,3 @@ class YahooTickerAgent(TickerAgent):
             if isinstance(val, int) or isinstance(val, float):
                 min_val = min(val, min_val)
         return min_val
-
